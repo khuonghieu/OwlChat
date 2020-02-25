@@ -2,6 +2,7 @@ package edu.temple.vsowlnetchat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Set;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -32,12 +35,14 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Patterns.IP_ADDRESS.matcher(ipAddr).matches() && port >= 0 && port <= 65535) {
-                    Intent toMain = new Intent(SettingActivity.this, MainActivity.class);
+                    Intent toMain = new Intent();
                     toMain.putExtra("ip", ipAddr);
                     toMain.putExtra("port", String.valueOf(port));
-                    SettingActivity.this.startActivity(toMain);
+                    setResult(Activity.RESULT_OK, toMain);
+                    finish();
                 } else {
-                    Toast.makeText(SettingActivity.this, "IP or port not valid", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_CANCELED);
+                    finish();
                 }
             }
         });

@@ -39,34 +39,22 @@ public class MainActivity extends AppCompatActivity {
         Button joinButton = findViewById(R.id.joinButton);
         Button settingButton = findViewById(R.id.settingButton);
 
-        try {
-            Intent fromSetting = getIntent();
-            ip = fromSetting.getStringExtra("ip");
-            port = Integer.parseInt(fromSetting.getStringExtra("port"));
-        } catch (NullPointerException e) {
-            port = NetworkConsts.UDP_PORT;
-            ip = NetworkConsts.SERVER_ADDRESS;
-        }
-
-
+        //Setting
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent toSetting = new Intent(MainActivity.this, SettingActivity.class);
                 toSetting.putExtra("ip", ip);
                 toSetting.putExtra("port", port);
-                MainActivity.this.startActivity(toSetting);
+                MainActivity.this.startActivityForResult(toSetting, 1);
             }
         });
 
-
-
-
+        //Join chat room
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-
                     //Set up socket
                     InetAddress address = InetAddress.getByName(ip);
                     DatagramSocket socket = new DatagramSocket();
@@ -85,14 +73,18 @@ public class MainActivity extends AppCompatActivity {
                     socket.receive(getack);
                     buf2 = getack.getData();
                     JSONObject received = new JSONObject(new String(buf2));
+
+                    //Error message
                     if (received.getJSONObject("header").getString("type").equals("error")) {
                         String errorText = "Reply received. Error: ";
-                        errorText+= ErrorCodes.getStringError(received.getJSONObject("body").getInt("content"));
-                        Toast.makeText(MainActivity.this,errorText,Toast.LENGTH_SHORT).show();
+                        errorText += ErrorCodes.getStringError(received.getJSONObject("body").getInt("content"));
+                        Toast.makeText(MainActivity.this, errorText, Toast.LENGTH_SHORT).show();
                     }
+
+                    //ACK message
                     if (received.getJSONObject("header").getString("type").equals("ack")) {
                         Toast.makeText(MainActivity.this, "Reply received. ACK", Toast.LENGTH_SHORT).show();
-                        Intent changeToChat = new Intent(MainActivity.this,ChatActivity.class);
+                        Intent changeToChat = new Intent(MainActivity.this, ChatActivity.class);
                         changeToChat.putExtra("user", user);
                         MainActivity.this.startActivity(changeToChat);
                     }
@@ -106,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     Toast.makeText(MainActivity.this, "JSON error", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                } catch (SocketTimeoutException e){
+                } catch (SocketTimeoutException e) {
                     Toast.makeText(MainActivity.this, "Socket timeout", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "I/O error", Toast.LENGTH_SHORT).show();
@@ -116,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    //Make JSON user object
     public JSONObject registerUser(String userName) throws JSONException {
         String uuid = UUID.nameUUIDFromBytes(userName.getBytes()).toString();
         JSONObject obj = new JSONObject();
@@ -129,4 +121,22 @@ public class MainActivity extends AppCompatActivity {
         obj.put("body", new JSONObject());
         return obj;
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(MainActivity.this, "Change ip and port success", Toast.LENGTH_SHORT).show();
+                ip = data.getStringExtra("ip");
+                port = Integer.parseInt(data.getStringExtra("port"));
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(MainActivity.this, "Change ip and port fail", Toast.LENGTH_SHORT).show();
+                ip = NetworkConsts.SERVER_ADDRESS;
+                port = NetworkConsts.UDP_PORT;
+            }
+        }
+    }
+
 }
