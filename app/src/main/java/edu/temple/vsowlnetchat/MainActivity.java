@@ -39,6 +39,29 @@ public class MainActivity extends AppCompatActivity {
         Button joinButton = findViewById(R.id.joinButton);
         Button settingButton = findViewById(R.id.settingButton);
 
+        try {
+            Intent fromSetting = getIntent();
+            ip = fromSetting.getStringExtra("ip");
+            port = Integer.parseInt(fromSetting.getStringExtra("port"));
+        } catch (NullPointerException e) {
+            port = NetworkConsts.UDP_PORT;
+            ip = NetworkConsts.SERVER_ADDRESS;
+        }
+
+
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toSetting = new Intent(MainActivity.this, SettingActivity.class);
+                toSetting.putExtra("ip", ip);
+                toSetting.putExtra("port", port);
+                MainActivity.this.startActivity(toSetting);
+            }
+        });
+
+
+
+
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
