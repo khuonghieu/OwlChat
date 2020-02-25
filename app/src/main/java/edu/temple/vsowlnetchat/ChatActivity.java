@@ -113,7 +113,6 @@ public class ChatActivity extends AppCompatActivity {
                     socket.send(packet);
 
                     //Receive packet
-                    MessageComparator mc = new MessageComparator();
                     byte[] buf2 = new byte[buffSize];
 
                     DatagramPacket getack = new DatagramPacket(buf2, buf2.length);
@@ -130,6 +129,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
                     socket.close();
+                    MessageComparator mc = new MessageComparator();
                     queue.sort(mc);
                     ListView messageList = findViewById(R.id.messageList);
                     MessageAdapter msgAdapter = new MessageAdapter(ChatActivity.this, queue);
