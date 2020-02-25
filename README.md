@@ -1,3 +1,9 @@
+# Student Info
+Name: Hieu Khuong  
+CIS4307 - Distributed Systems and Networks  
+Spring 2020  
+Homework 3: Vector Clocks and Lamport Clocks  
+
 # OwlChat
 A program for practicing using Vector Clock and UDP protocol.
 
