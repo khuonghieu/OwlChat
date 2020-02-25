@@ -28,19 +28,23 @@ public class SettingActivity extends AppCompatActivity {
         editPort.setText(fromMain.getStringExtra("port"));
 
         confirmChange.setOnClickListener(new View.OnClickListener() {
-
-            String ipAddr = editIpAddress.getText().toString();
-            int port = Integer.parseInt(editPort.getText().toString());
-
             @Override
             public void onClick(View v) {
-                if (Patterns.IP_ADDRESS.matcher(ipAddr).matches() && port >= 0 && port <= 65535) {
-                    Intent toMain = new Intent();
-                    toMain.putExtra("ip", ipAddr);
-                    toMain.putExtra("port", String.valueOf(port));
-                    setResult(Activity.RESULT_OK, toMain);
-                    finish();
-                } else {
+
+                try {
+                    int port = Integer.parseInt(editPort.getText().toString());
+                    String ipAddr = editIpAddress.getText().toString();
+                    if (Patterns.IP_ADDRESS.matcher(ipAddr).matches() && port >= 0 && port <= 65535) {
+                        Intent toMain = new Intent();
+                        toMain.putExtra("ip", ipAddr);
+                        toMain.putExtra("port", String.valueOf(port));
+                        setResult(Activity.RESULT_OK, toMain);
+                        finish();
+                    } else {
+                        setResult(Activity.RESULT_CANCELED);
+                        finish();
+                    }
+                } catch (NumberFormatException e) {
                     setResult(Activity.RESULT_CANCELED);
                     finish();
                 }

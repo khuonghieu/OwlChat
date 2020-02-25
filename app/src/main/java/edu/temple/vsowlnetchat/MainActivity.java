@@ -2,6 +2,7 @@ package edu.temple.vsowlnetchat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -35,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Allow network on main thread
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        //Elements in the UI
         final EditText userName = findViewById(R.id.userName);
         Button joinButton = findViewById(R.id.joinButton);
         Button settingButton = findViewById(R.id.settingButton);
@@ -45,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent toSetting = new Intent(MainActivity.this, SettingActivity.class);
                 toSetting.putExtra("ip", ip);
-                toSetting.putExtra("port", port);
+                toSetting.putExtra("port", String.valueOf(port));
                 MainActivity.this.startActivityForResult(toSetting, 1);
             }
         });
