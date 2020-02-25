@@ -24,4 +24,10 @@
         android:layout_height="78dp"
         android:text="Retrieve Chat" />
 
+    <Button
+        android:id="@+id/deregister"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:text="Deregister" />
+
 </LinearLayout>
