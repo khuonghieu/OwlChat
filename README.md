@@ -31,7 +31,8 @@ Clock part:
 - LamportClock class: uses an int to keep track of logical time.
 - VectorClock class: uses a map to keep track of series logical time attached to a certain process ID.  
 - Message class: parsed from Json file retrieved from server, has a content field and a vector clock.
-- MessageComparator class: given 2 messages, decides which message happens before the other.
+- MessageComparator class: given 2 messages, decides which message happens before the other.  
+
 Android part:  
 - MainActivity:
   * An Edittext to put user name in.
